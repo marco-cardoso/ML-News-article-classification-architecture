@@ -1,6 +1,6 @@
 # `Project goal`
 
-The main goal of this project is to create a machine learning solution to automatically
+Create a machine learning solution to automatically
 classify texts from news websites over a few categories :
 
 <ul>
