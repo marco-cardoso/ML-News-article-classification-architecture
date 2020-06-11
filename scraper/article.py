@@ -27,7 +27,6 @@ class GuardianArticle(object):
         self.published_on = self._get_article_published_date()
         self.topics = self._get_article_topics()
 
-        print(url)
         sleep(1)
 
     def _get_article_title(self) -> str:
