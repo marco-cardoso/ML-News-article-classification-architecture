@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import requests as re
 from bs4 import BeautifulSoup
 
+from article import GuardianArticle, ContentNotFoundException
+
 CATEGORIES = [
     'politics',
     'environment',
@@ -39,17 +41,12 @@ def get_articles_urls(url: str) -> list:
     :return: A List with the URLs of the articles
     """
     response = re.get(url)
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text, features="html.parser")
 
     content_area = soup.find("div", {'class': "fc-container__inner"})
     anchors = content_area.find_all("a", {'data-link-name': 'article'})
     links = [anchor.get('href') for anchor in anchors]
-    return links
-
-
-def download_article(url: str):
-    response = re.get(url)
-    pass
+    return list(set(links))
 
 
 def main():
@@ -69,9 +66,15 @@ def main():
 
             articles_urls = get_articles_urls(url)
 
-            # TODO Download the articles and save them somewhere
+            for article_url in articles_urls:
 
-            total_downloaded = len(articles_urls)
+                try:
+                    article = GuardianArticle(article_url)
+                except ContentNotFoundException:
+                    pass
+
+                total_downloaded += 1
+
             current_date -= timedelta(days=1)
 
 
