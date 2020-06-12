@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
+from multiprocessing import Pool
+from functools import partial
 from time import sleep
 
 import requests as re
 from bs4 import BeautifulSoup
+from tqdm.contrib.concurrent import process_map
 
-from database.main import insert_article
+from database.main import Database
 from article import GuardianArticle, ContentNotFoundException
 
 CATEGORIES = [
@@ -42,6 +45,7 @@ def get_articles_urls(url: str) -> list:
     :param url: The URL of the website following a specific format
     :return: A List with the URLs of the articles
     """
+    sleep(1)
     response = re.get(url)
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -51,53 +55,69 @@ def get_articles_urls(url: str) -> list:
     return list(set(links))
 
 
+def get_category_articles(amount_of_articles: int, category: str):
+    """
+    It downloads and saves N articles from the given category in MongoDB.
+    This is the method used by the threads.
+    :param amount_of_articles: An integer with the value of N
+    :param category: A string with the category
+    """
+    total_downloaded = 0
+    current_date = datetime.now()
+    db = Database()
+
+    while total_downloaded < amount_of_articles:
+        current_year = current_date.year
+        current_month = current_date.strftime("%B")[:3].lower()
+        current_day = current_date.day if current_date.day >= 10 else "0" + str(current_date.day)
+
+        url = format_url(category, current_year, current_month, current_day)
+        print(url)
+
+        articles_urls = get_articles_urls(url)
+
+        for article_url in articles_urls:
+
+            # This loop is necessary because sometimes the server sends a page
+            # with unknown HTML classes. The approach is to try to get a recognizable
+            # page three times. If none attempt work the article is ignored.
+            for i in range(3):
+
+                try:
+                    article = GuardianArticle(article_url)
+                    db.insert_article(
+                        {
+                            'category': category,
+                            'title': article.title,
+                            'content': article.get_content_str(),
+                            'topics': article.topics,
+                            'published_on': current_date
+                        }
+                    )
+
+                    total_downloaded += 1
+                    print(f"{total_downloaded} - Article {article_url} successfully inserted !")
+                    break
+                except ContentNotFoundException:
+                    # if i == 2:
+                    #     print(f"The article {article_url} was ignored due to an unknown format !")
+                    pass
+                finally:
+                    sleep(1)
+
+        current_date -= timedelta(days=1)
+    return 1
+
+
 def main():
-    amount_articles = 100
+    amount_articles = 1000
+    function = partial(get_category_articles, amount_articles, )
+    with Pool(len(CATEGORIES)) as p:
+        p.map(function,  CATEGORIES)
+        p.join()
+        p.close()
 
-    for category in CATEGORIES:
-
-        total_downloaded = 0
-        current_date = datetime.now()
-
-        while total_downloaded < amount_articles:
-            current_year = current_date.year
-            current_month = current_date.strftime("%B")[:3].lower()
-            current_day = current_date.day if current_date.day >= 10 else "0" + str(current_date.day)
-
-            url = format_url(category, current_year, current_month, current_day)
-
-            articles_urls = get_articles_urls(url)
-
-            for article_url in articles_urls:
-
-                # This loop is necessary because sometimes the server sends a page
-                # with unknown HTML classes. The approach is to try to get a recognizable
-                # page three times. If none attempt work the article is ignored.
-                for i in range(3):
-
-                    try:
-                        article = GuardianArticle(article_url)
-                        insert_article(
-                            {
-                                'category': category,
-                                'title': article.title,
-                                'content': article.get_content_str(),
-                                'topics': article.topics,
-                                'published_on': current_date
-                            }
-                        )
-
-                        total_downloaded += 1
-                        print("Article successfully inserted !")
-                        break
-                    except ContentNotFoundException:
-                        if i == 2:
-                            print(f"The article {article_url} was ignored due to an unknown format !")
-                        pass
-                    finally:
-                        sleep(1)
-
-            current_date -= timedelta(days=1)
+    process_map(function, CATEGORIES, max_workers=len())
 
 
 if __name__ == '__main__':

@@ -1,14 +1,20 @@
 from pymongo import MongoClient
 from database import configs as cfg
 
-client = MongoClient(
-    host=cfg.host,
-    port=cfg.port
-)
 
-db = client[cfg.database]
-collection = db['articles']
+class Database:
 
+    def __init__(self) -> None:
+        super().__init__()
 
-def insert_article(article: dict):
-    return collection.insert_one(article)
+        client = MongoClient(
+            host=cfg.host,
+            port=cfg.port,
+            maxPoolSize=20
+        )
+
+        db = client[cfg.database]
+        self.collection = db['articles']
+
+    def insert_article(self, article: dict):
+        return self.collection.insert_one(article)
