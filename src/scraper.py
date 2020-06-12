@@ -81,15 +81,14 @@ def main():
                             {
                                 'category': category,
                                 'title': article.title,
-                                # TODO Save the content in a single string
-                                # instead of separated list itens
-                                'content': article.content,
+                                'content': article.get_content_str(),
                                 'topics': article.topics,
-                                'published_on': article.published_on
+                                'published_on': current_date
                             }
                         )
 
                         total_downloaded += 1
+                        print("Article successfully inserted !")
                         break
                     except ContentNotFoundException:
                         if i == 2:

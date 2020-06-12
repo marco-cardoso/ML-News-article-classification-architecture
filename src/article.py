@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import requests as re
 from bs4 import BeautifulSoup
 
@@ -91,7 +89,7 @@ class GuardianArticle:
                 "The topics for the given article URL was not found ! \n"
                 "This could be happening due to an article with different HTML format...")
 
-    def _get_article_published_date(self) -> datetime:
+    def _get_article_published_date(self):
         """
        It gets the article published date from the self.soup class attribute
        :return: The article content paragraphs
@@ -129,3 +127,6 @@ class GuardianArticle:
         :return: A formatted string representing the paragraph
         """
         return paragraph.text.replace("\n", "")
+
+    def get_content_str(self):
+        return ' '.join(self.content)
