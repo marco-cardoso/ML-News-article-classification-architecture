@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+from time import sleep
 
 import requests as re
 from bs4 import BeautifulSoup
 
+from database.main import insert_article
 from article import GuardianArticle, ContentNotFoundException
 
 CATEGORIES = [
@@ -50,7 +52,7 @@ def get_articles_urls(url: str) -> list:
 
 
 def main():
-    amount_articles = 1000
+    amount_articles = 100
 
     for category in CATEGORIES:
 
@@ -68,12 +70,33 @@ def main():
 
             for article_url in articles_urls:
 
-                try:
-                    article = GuardianArticle(article_url)
-                except ContentNotFoundException:
-                    pass
+                # This loop is necessary because sometimes the server sends a page
+                # with unknown HTML classes. The approach is to try to get a recognizable
+                # page three times. If none attempt work the article is ignored.
+                for i in range(3):
 
-                total_downloaded += 1
+                    try:
+                        article = GuardianArticle(article_url)
+                        insert_article(
+                            {
+                                'category': category,
+                                'title': article.title,
+                                # TODO Save the content in a single string
+                                # instead of separated list itens
+                                'content': article.content,
+                                'topics': article.topics,
+                                'published_on': article.published_on
+                            }
+                        )
+
+                        total_downloaded += 1
+                        break
+                    except ContentNotFoundException:
+                        if i == 2:
+                            print(f"The article {article_url} was ignored due to an unknown format !")
+                        pass
+                    finally:
+                        sleep(1)
 
             current_date -= timedelta(days=1)
 

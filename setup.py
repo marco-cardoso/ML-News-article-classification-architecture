@@ -4,7 +4,7 @@ setup(
     name='news-classifier',
     version='0.01',
     packages=[''],
-    package_dir={'': 'scraper'},
+    package_dir={'': ''},
     url='https://github.com/marco-cardoso/news-classifier',
     license='',
     author='Marco Cardoso',
