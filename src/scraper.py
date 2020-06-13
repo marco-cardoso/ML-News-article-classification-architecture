@@ -1,14 +1,13 @@
 from datetime import datetime, timedelta
-from multiprocessing import Pool
 from functools import partial
+from multiprocessing import Pool
 from time import sleep
 
 import requests as re
 from bs4 import BeautifulSoup
-from tqdm.contrib.concurrent import process_map
 
+from utils.article import GuardianArticle, ContentNotFoundException
 from database.main import Database
-from article import GuardianArticle, ContentNotFoundException
 
 CATEGORIES = [
     'politics',
@@ -80,7 +79,7 @@ def get_category_articles(amount_of_articles: int, category: str):
 
             # This loop is necessary because sometimes the server sends a page
             # with unknown HTML classes. The approach is to try to get a recognizable
-            # page three times. If none attempt work the article is ignored.
+            # page three times. If none attempt works then the article is ignored.
             for i in range(3):
 
                 try:
@@ -98,7 +97,7 @@ def get_category_articles(amount_of_articles: int, category: str):
                     total_downloaded += 1
                     print(f"{total_downloaded} - Article {article_url} successfully inserted !")
                     break
-                except ContentNotFoundException:
+                except (ContentNotFoundException, AttributeError):
                     # if i == 2:
                     #     print(f"The article {article_url} was ignored due to an unknown format !")
                     pass
@@ -106,7 +105,6 @@ def get_category_articles(amount_of_articles: int, category: str):
                     sleep(1)
 
         current_date -= timedelta(days=1)
-    return 1
 
 
 def main():
@@ -116,8 +114,6 @@ def main():
         p.map(function,  CATEGORIES)
         p.join()
         p.close()
-
-    process_map(function, CATEGORIES, max_workers=len())
 
 
 if __name__ == '__main__':

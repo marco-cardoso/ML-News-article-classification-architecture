@@ -107,7 +107,9 @@ class GuardianArticle:
     def _filter_paragraphs(self, paragraph) -> bool:
         """
         It returns true if the paragraph is valid and false otherwise.
-        Date of paragraph and author are useless data.
+        Date of paragraph and author are useless data. The website sets
+        them with a HTML class called "block-time" and "liveblog-block-byline__name"
+        respectively.
         :param paragraph: A BeautifulSoup object
         :return: A boolean indicating whether the paragraph is valid or not
         """
@@ -128,5 +130,10 @@ class GuardianArticle:
         """
         return paragraph.text.replace("\n", "")
 
-    def get_content_str(self):
+    def get_content_str(self) -> str:
+        """
+        It concatenates all strings in the content variable
+        into a single string.
+        :return: A String with all paragraphs concatenated
+        """
         return ' '.join(self.content)
