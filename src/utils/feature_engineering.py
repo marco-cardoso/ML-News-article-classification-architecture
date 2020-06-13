@@ -14,7 +14,7 @@ def preprocess(df: pd.DataFrame) -> pd.DataFrame:
 
     for column in text_columns:
         # Changing to lower case and removing punctuation
-        df[column].apply(lambda column: column.str.lower().str.replace('[^\w\s]', ''))
+        df[column] = df[column].apply([lambda column: column.str.lower().str.replace('[^\w\s]', '')], axis=0)
 
         # Tokenizing the corpus
         df[column] = df[column].apply(lambda x: tokenizer.tokenize(x))
