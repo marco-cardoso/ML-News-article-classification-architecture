@@ -35,7 +35,7 @@ class Database:
 
     def read_articles(self, projection: dict = None) -> pd.DataFrame:
         """
-        It reads all the articles from the database and convert them into
+        It reads all the articles from the database and converts them into
         a pandas dataframe
         :return: A pandas DataFrame
         """
