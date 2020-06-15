@@ -1,7 +1,7 @@
 from pymongo import MongoClient
-from database import configs as cfg
-
 import pandas as pd
+
+from news_classifier.database import configs as cfg
 
 
 class Database:
