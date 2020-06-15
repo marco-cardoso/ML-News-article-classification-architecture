@@ -19,18 +19,19 @@ lemmatizer = nltk.stem.WordNetLemmatizer()
 
 
 def build_features_ml(
-        df: pd.DataFrame,
-        transf_output_path: str,
+        transf_output_path: str = None,
         save_transformers: bool = False) -> tuple:
     """
-    It builds the features to feed a ML model for a given dataset
-    :param df: A Pandas dataframe with the features to be transformed
+    It builds the features to feed a ML model
     :param save_transformers: A boolean representing the wish to save the
     used transformer or not
     :param transf_output_path: A string with the output path of the
     transformers to be saved
     :return: A tuple with X and Y data
     """
+    db = Database()
+    df = db.read_articles()
+
     X, y = df['content'], df['category']
 
     tfid = TfidfVectorizer(
@@ -53,7 +54,7 @@ def build_features_ml(
             filename=path.join(transf_output_path, "le.gz")
         )
 
-    return X, y
+    return X, y, le
 
 
 def build_features_analysis(df: pd.DataFrame) -> pd.DataFrame:
@@ -94,3 +95,4 @@ def read_analysis_df():
     db = Database()
     df = db.read_articles()
     return build_features_analysis(df)
+
