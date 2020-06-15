@@ -6,8 +6,8 @@ from time import sleep
 import requests as re
 from bs4 import BeautifulSoup
 
-from utils.article import GuardianArticle, ContentNotFoundException
-from database.main import Database
+from news_classifier.database.main import Database
+from news_classifier.scraper.article import GuardianArticle, ContentNotFoundException
 
 CATEGORIES = [
     'politics',
