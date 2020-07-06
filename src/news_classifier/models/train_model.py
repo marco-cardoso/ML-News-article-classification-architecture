@@ -1,18 +1,12 @@
 from os import path
 
-from sklearn.svm import LinearSVC
-from sklearn.externals import joblib
-
-from news_classifier.database.main import Database
 from news_classifier.features.build_features import build_features_ml
+from sklearn.externals import joblib
+from sklearn.svm import LinearSVC
 
 
 def train():
-    db = Database()
-    df = db.read_articles()
-
-    X, y = build_features_ml(
-        df=df,
+    X, y, le = build_features_ml(
         transf_output_path="models",
         save_transformers=True
     )

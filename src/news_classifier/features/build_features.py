@@ -95,4 +95,3 @@ def read_analysis_df():
     db = Database()
     df = db.read_articles()
     return build_features_analysis(df)
-
