@@ -1,19 +1,20 @@
-from os import path
+from os import path, getcwd
 
 import joblib
 import numpy as np
 from news_classifier.models import text_examples
 
-LE_PATH = path.join("models", "le.gz")
-TFID_PATH = path.join("models", "tfid.gz")
-MODEL_PATH = path.join("models", "model.gz")
+ROOT_PATH = path.dirname(__file__)
+LE_PATH = path.join(ROOT_PATH, "models", "le.gz")
+TFID_PATH = path.join(ROOT_PATH, "models", "tfid.gz")
+MODEL_PATH = path.join(ROOT_PATH, "models", "model.gz")
 
 LE = joblib.load(LE_PATH)
 TFID = joblib.load(TFID_PATH)
 MODEL = joblib.load(MODEL_PATH)
 
 
-def predict(X: np.array):
+def predict(X: np.array) -> np.array:
     """
     It classifies the category of the given texts
     :param X: A numpy array with the texts to classify
