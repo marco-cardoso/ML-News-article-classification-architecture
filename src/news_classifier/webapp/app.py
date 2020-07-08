@@ -2,7 +2,7 @@ import numpy as np
 
 from flask import Flask, request, render_template, redirect, session
 
-from news_classifier.models import predict
+from news_classifier.models import predict, text_examples
 
 
 app = Flask(__name__)
@@ -11,6 +11,10 @@ app.secret_key = "}@$/=(+@;7`9~8/5"
 
 @app.route("/")
 def index():
+
+    if 'news-article' not in session:
+        session['news-article'] = text_examples.business
+
     return render_template("index.html")
 
 

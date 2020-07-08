@@ -3,18 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>News classifier webapp</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+
+        body {
+
+            background-color : #301263;
+            color : white;
+            text-align : center;
+            padding-top : 50px;
+        }
+
+        textarea {
+
+             background-color : #301263;
+             color : white;
+             right : 300px;
+        }
+
+    </style>
+
+
 </head>
 <body>
 
     <h1>News classifier webapp</h1>
-    <h3>Insert the text below !</h3>
+    <h3>Insert the article below </h3>
     <form method="POST" action="/classify">
-        <textarea name="text">
+        <textarea  name="text" rows="15" cols="100" required>
             {{ session['news-article'] }}
         </textarea>
-        <button>Send</button>
+        </br>
+        {% if session['category'] %}
+            <p>Category : {{ session['category'] }}</p>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Classify article</button>
     </form>
-    <p> {{ session['category'] }}</p>
+
 
 </body>
 </html>
