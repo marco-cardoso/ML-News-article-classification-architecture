@@ -8,10 +8,13 @@
 
     <h1>News classifier webapp</h1>
     <h3>Insert the text below !</h3>
-    <form>
-        <textarea></textarea>
+    <form method="POST" action="/classify">
+        <textarea name="text">
+            {{ session['news-article'] }}
+        </textarea>
         <button>Send</button>
     </form>
+    <p> {{ session['category'] }}</p>
 
 </body>
 </html>
