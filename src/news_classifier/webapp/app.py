@@ -23,8 +23,11 @@ def classify_news():
     if request.method == 'POST':
         article_text = request.form['text']
 
-        session['news-article'] = article_text
+        # For some reason flask is inserting some whitespace at the beginning of
+        # the text. To remove it we can use the strip function.
+        article_text = article_text.strip()
 
+        session['news-article'] = article_text
         category = predict(np.array(
             [
                 article_text
