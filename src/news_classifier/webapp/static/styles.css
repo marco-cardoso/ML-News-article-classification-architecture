@@ -1,0 +1,21 @@
+ body {
+    background-color : #301263;
+    color : white;
+    text-align : center;
+    padding-top : 50px;
+}
+
+textarea {
+     background-color : #301263;
+     color : white;
+     right : 300px;
+}
+
+form {
+    margin-top : 15px;
+}
+
+.button-list {
+    display : inline;
+    padding : 20px;
+}
