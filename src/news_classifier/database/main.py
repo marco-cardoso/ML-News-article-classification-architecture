@@ -19,7 +19,7 @@ class Database:
 
         client = MongoClient(
             host=os.environ.get("MONGO_HOST"),
-            port=os.environ.get("MONGO_PORT"),
+            port=int(os.environ.get("MONGO_PORT")),
             maxPoolSize=20
         )
 

@@ -12,6 +12,8 @@ app.secret_key = "}@$/=(+@;7`9~8/5"
 @app.route("/")
 def index():
 
+    # This is useful because otherwise nothing would be
+    # displayed for the user to classify
     if 'news-article' not in session:
         session['news-article'] = text_examples.business
 

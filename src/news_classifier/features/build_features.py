@@ -22,7 +22,7 @@ def build_features_ml(
         transf_output_path: str = None,
         save_transformers: bool = False) -> tuple:
     """
-    It builds the features to feed a ML model
+    It builds the features to feed the ML model
     :param save_transformers: A boolean representing the wish to save the
     used transformer or not
     :param transf_output_path: A string with the output path of the

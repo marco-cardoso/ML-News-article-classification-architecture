@@ -108,7 +108,7 @@ def get_category_articles(amount_of_articles: int, category: str):
 
 
 def main():
-    amount_articles = 1000
+    amount_articles = 10000
     function = partial(get_category_articles, amount_articles, )
     with Pool(len(CATEGORIES)) as p:
         p.map(function,  CATEGORIES)
