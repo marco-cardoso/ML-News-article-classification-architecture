@@ -1,7 +1,7 @@
+import os
+
 from pymongo import MongoClient
 import pandas as pd
-
-from news_classifier.database import configs as cfg
 
 
 class Database:
@@ -18,12 +18,12 @@ class Database:
         super().__init__()
 
         client = MongoClient(
-            host=cfg.host,
-            port=cfg.port,
+            host=os.environ.get("MONGO_HOST"),
+            port=os.environ.get("MONGO_PORT"),
             maxPoolSize=20
         )
 
-        db = client[cfg.database]
+        db = client["news-classifier"]
         self.collection = db['articles']
 
     def insert_article(self, article: dict):
