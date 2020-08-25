@@ -1,7 +1,7 @@
 from news_classifier.config import variables
 from news_classifier.database import db
 from news_classifier.models import pipeline
-
+from news_classifier.utils import load_data
 
 def train():
     df = db.read_articles()

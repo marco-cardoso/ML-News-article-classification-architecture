@@ -1,7 +1,6 @@
 import os
 
 from pymongo import MongoClient
-import pandas as pd
 
 
 class Database:
@@ -33,11 +32,10 @@ class Database:
         """
         return self.collection.insert_one(article)
 
-    def read_articles(self, projection: dict = None) -> pd.DataFrame:
+    def read_articles(self, projection: dict = None) -> list:
         """
-        It reads all the articles from the database and converts them into
-        a pandas dataframe
-        :return: A pandas DataFrame
+        It reads all the articles in the database
+        :return: A list with the news articles
         """
         if projection is None:
             projection = {
@@ -48,7 +46,7 @@ class Database:
             filter={},
             projection=projection
         ))
-        return pd.DataFrame(articles)
+        return articles
 
 
 db = Database()

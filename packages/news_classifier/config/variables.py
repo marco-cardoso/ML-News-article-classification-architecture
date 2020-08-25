@@ -1,5 +1,5 @@
 """
-    Module to store the variable settings
+    Module to store the variables settings
 """
 import pathlib
 import news_classifier
