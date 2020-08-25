@@ -6,7 +6,7 @@ from time import sleep
 import requests as re
 from bs4 import BeautifulSoup
 
-from news_classifier.database.main import Database
+from news_classifier.database import db
 from news_classifier.scraper.article import GuardianArticle, ContentNotFoundException
 
 CATEGORIES = [
@@ -63,7 +63,6 @@ def get_category_articles(amount_of_articles: int, category: str):
     """
     total_downloaded = 0
     current_date = datetime.now()
-    db = Database()
 
     while total_downloaded < amount_of_articles:
         current_year = current_date.year
