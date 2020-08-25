@@ -1,20 +1,13 @@
-from os import path
-
-from news_classifier.features.build_features import build_features_ml
-from sklearn.externals import joblib
-from sklearn.svm import LinearSVC
+from news_classifier.config import variables
+from news_classifier.database import db
+from news_classifier.models import pipeline
 
 
 def train():
-    X, y, le = build_features_ml(
-        transf_output_path="models",
-        save_transformers=True
-    )
+    df = db.read_articles()
+    X, y = df[variables.FEATURES]
 
-    estimator = LinearSVC(C=0.5, dual=True, loss='squared_hinge', penalty='l2', tol=0.001)
-    estimator.fit(X, y)
-
-    joblib.dump(estimator, path.join("models", "model.gz"))
+    pipeline.category_classifier.fit(X, y)
 
 
 if __name__ == "__main__":

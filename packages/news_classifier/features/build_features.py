@@ -1,13 +1,5 @@
-from os import path
-
-import pandas as pd
-
-from sklearn.preprocessing import LabelEncoder
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.externals import joblib
-
 import nltk
-
+import pandas as pd
 from news_classifier.database.main import Database
 
 nltk.download('stopwords')
@@ -16,45 +8,6 @@ STOPWORDS = nltk.corpus.stopwords.words('english')
 
 tokenizer = nltk.RegexpTokenizer(r'\w+')
 lemmatizer = nltk.stem.WordNetLemmatizer()
-
-
-def build_features_ml(
-        transf_output_path: str = None,
-        save_transformers: bool = False) -> tuple:
-    """
-    It builds the features to feed the ML model
-    :param save_transformers: A boolean representing the wish to save the
-    used transformer or not
-    :param transf_output_path: A string with the output path of the
-    transformers to be saved
-    :return: A tuple with X and Y data
-    """
-    db = Database()
-    df = db.read_articles()
-
-    X, y = df['content'], df['category']
-
-    tfid = TfidfVectorizer(
-        stop_words="english"
-    )
-
-    le = LabelEncoder()
-
-    X = tfid.fit_transform(X)
-    y = le.fit_transform(y)
-
-    if save_transformers:
-        joblib.dump(
-            tfid,
-            filename=path.join(transf_output_path, "tfid.gz")
-        )
-
-        joblib.dump(
-            le,
-            filename=path.join(transf_output_path, "le.gz")
-        )
-
-    return X, y, le
 
 
 def build_features_analysis(df: pd.DataFrame) -> pd.DataFrame:
