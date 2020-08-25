@@ -13,5 +13,4 @@ def save_pipeline(pipeline: Pipeline) -> None:
     """
     save_file_name = f"{paths.PIPELINE_SAVE_FILE}{__version__}.pkl"
     save_path = paths.MODELS_DIR / save_file_name
-
     joblib.dump(pipeline, save_path)
