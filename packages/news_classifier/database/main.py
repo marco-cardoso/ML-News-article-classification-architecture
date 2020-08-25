@@ -49,3 +49,6 @@ class Database:
             projection=projection
         ))
         return pd.DataFrame(articles)
+
+
+db = Database()
