@@ -12,8 +12,8 @@ pipeline = load_pipeline()
 def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
     data = pd.DataFrame([input_data])
 
-    prediction = pipeline.predict(data)
-    results = {"predictions": prediction, "version": __version__}
+    predictions = pipeline.predict(data)
+    results = {"prediction": predictions[0], "version": __version__}
     return results
 
 
