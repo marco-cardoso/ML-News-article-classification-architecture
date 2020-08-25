@@ -48,6 +48,6 @@ MANIFEST
 
 # Per-project virtualenvs
 .venv*/
-/src/news_classifier/database/.ipynb_checkpoints/
-/src/news_classifier/.ipynb_checkpoints/
+/packages/news_classifier/database/.ipynb_checkpoints/
+/packages/news_classifier/.ipynb_checkpoints/
 /.ipynb_checkpoints/

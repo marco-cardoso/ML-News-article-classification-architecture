@@ -48,7 +48,7 @@ The guardian website was used due to its simplicity to download the data from.
 The URLs follow a clear pattern : 'https://www.theguardian.com/{category}/{year}/{month}/{day}/'. 
 Also, all the articles from a specific category and date are showed in a single URL.
 
-If you want to run the scraper to get the data and train the model the script is available at :
+If you want to run the scraper to get the data to train the model the script is available at :
 
 https://github.com/marco-cardoso/news-classifier/blob/master/src/news_classifier/scraper/scraper.py
 
