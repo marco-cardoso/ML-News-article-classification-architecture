@@ -1,8 +1,8 @@
-from os import path, getcwd
+from os import path
 
 import joblib
 import numpy as np
-from news_classifier.models import text_examples
+from news_classifier.news_classifier.models import text_examples
 
 ROOT_PATH = path.dirname(__file__)
 LE_PATH = path.join(ROOT_PATH, "models", "le.gz")

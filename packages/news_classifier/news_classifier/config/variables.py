@@ -1,11 +1,6 @@
 """
-    Module to store the variables settings
+    Module to store the features settings
 """
-import pathlib
-import news_classifier
-
-PACKAGE_ROOT = pathlib.Path(news_classifier.__file__).resolve().parent
-
 FEATURES = [
     "category",
     "title",
@@ -21,7 +16,4 @@ TEXT_FEATURES = ["content"]
 
 TARGET = "category"
 
-
-PIPELINE_NAME = "linear_svc"
-PIPELINE_SAVE_FILE = f"{PIPELINE_NAME}_output_v"
 

@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import LinearSVC
 
-from news_classifier.config import variables
+from news_classifier.news_classifier.config import variables
 
 category_classifier = Pipeline([
     ColumnTransformer(

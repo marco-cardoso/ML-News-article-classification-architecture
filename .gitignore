@@ -4,7 +4,7 @@
 *.so
 *.cfg
 !.isort.cfg
-!setup.cfg
+!packages/news_classifier/setup.cfg
 *.orig
 *.log
 *.pot
@@ -40,14 +40,14 @@ coverage.xml
 build/*
 dist/*
 sdist/*
-docs/api/*
-docs/_rst/*
-docs/_build/*
+packages/news_classifier/docs/api/*
+packages/news_classifier/docs/_rst/*
+packages/news_classifier/docs/_build/*
 cover/*
 MANIFEST
 
 # Per-project virtualenvs
 .venv*/
-/packages/news_classifier/database/.ipynb_checkpoints/
+/packages/news_classifier/news_classifier/database/.ipynb_checkpoints/
 /packages/news_classifier/.ipynb_checkpoints/
 /.ipynb_checkpoints/

@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from news_classifier.visualization import confusion_matrix, learning_curve
+from news_classifier.news_classifier.visualization import confusion_matrix, learning_curve
 
 
 def plot(estimator, est_name, X, y, classes):

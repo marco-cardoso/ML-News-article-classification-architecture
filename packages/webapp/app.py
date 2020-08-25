@@ -2,7 +2,7 @@ import numpy as np
 
 from flask import Flask, request, render_template, redirect, session
 
-from news_classifier.models import predict, text_examples
+from news_classifier.news_classifier.models import predict, text_examples
 
 
 app = Flask(__name__)
