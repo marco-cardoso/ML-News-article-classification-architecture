@@ -1,6 +1,6 @@
 import pandas as pd
 
-from news_classifier.news_classifier.database import db
+from news_classifier.database import db
 
 
 def load_data() -> pd.DataFrame:

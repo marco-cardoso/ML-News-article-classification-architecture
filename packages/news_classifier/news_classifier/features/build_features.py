@@ -1,6 +1,6 @@
 import nltk
 import pandas as pd
-from news_classifier.news_classifier.database.main import Database
+from news_classifier.database.main import Database
 
 nltk.download('stopwords')
 nltk.download('wordnet')

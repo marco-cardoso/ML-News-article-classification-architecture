@@ -10,9 +10,9 @@ FEATURES = [
 ]
 
 # These features are only used in the data analysis process
-DROP_FEATURES = ["title", "topics", "published_on"]
+DROP_FEATURES = ["title", "topics", "published_on", "category"]
 
-TEXT_FEATURES = ["content"]
+TEXT_FEATURES = "content"
 
 TARGET = "category"
 
