@@ -2,7 +2,7 @@ from news_classifier.models.predict import predict
 from news_classifier.utils import text_examples
 
 
-def prediction():
+def test_prediction():
     data = {
         'content': text_examples.business
     }
