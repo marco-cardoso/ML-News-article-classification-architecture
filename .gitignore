@@ -13,6 +13,7 @@ __pycache__/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
+build/*
 
 # Project files
 .ropeproject
@@ -51,3 +52,4 @@ MANIFEST
 /packages/news_classifier/news_classifier/database/.ipynb_checkpoints/
 /packages/news_classifier/.ipynb_checkpoints/
 /.ipynb_checkpoints/
+packages/news_classifier/build/*
