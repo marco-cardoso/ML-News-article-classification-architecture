@@ -1,13 +1,31 @@
 version: '3'
 services:
+  mongo:
+    image: 'mongo'
+    container_name: 'mongodb'
+    env_file:
+      - news_classifier.env
+    ports:
+      - "27016:27017"
+    volumes:
+      - mongo-volume:/data/db
+    networks:
+      - db_nw
   news_classifier:
     build: .
+    container_name: 'flask_app'
+    env_file:
+      - news_classifier.env
     volumes:
       - ./packages:/opt/services/news_classifier
     networks:
       - web_nw
+      - db_nw
+    depends_on: 
+      - mongo
   nginx:
     image: "nginx:1.13.5"
+    container_name: 'nginx'
     ports:
       - "8080:80"
     volumes:
@@ -19,5 +37,8 @@ services:
 networks:
   web_nw:
     driver: bridge
+  db_nw:
+    driver: bridge
 volumes:
   packages:
+  mongo-volume:
