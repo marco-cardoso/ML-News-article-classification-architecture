@@ -54,20 +54,20 @@ def get_articles_urls(url: str) -> list:
     return list(set(links))
 
 
-def get_category_articles(amount_of_articles: int, category: str):
+def get_category_articles(start_date: datetime.date, end_date: datetime.date, category: str):
     """
-    It downloads and saves N articles from the given category in MongoDB.
+    It iterates daily from the start_date to the end_date downloading the articles
     This is the method used by the threads.
-    :param amount_of_articles: An integer with the value of N
+    :param start_date: A datetime object with the start date
+    :param end_date: A datetime object with the end date
     :param category: A string with the category
     """
     total_downloaded = 0
-    current_date = datetime.now()
 
-    while total_downloaded < amount_of_articles:
-        current_year = current_date.year
-        current_month = current_date.strftime("%B")[:3].lower()
-        current_day = current_date.day if current_date.day >= 10 else "0" + str(current_date.day)
+    while start_date <= end_date:
+        current_year = start_date.year
+        current_month = start_date.strftime("%B")[:3].lower()
+        current_day = start_date.day if start_date.day >= 10 else "0" + str(start_date.day)
 
         url = format_url(category, current_year, current_month, current_day)
         print(url)
@@ -89,7 +89,7 @@ def get_category_articles(amount_of_articles: int, category: str):
                             'title': article.title,
                             'content': article.get_content_str(),
                             'topics': article.topics,
-                            'published_on': current_date
+                            'published_on': start_date
                         }
                     )
 
@@ -103,12 +103,16 @@ def get_category_articles(amount_of_articles: int, category: str):
                 finally:
                     sleep(1)
 
-        current_date -= timedelta(days=1)
+        start_date -= timedelta(days=1)
 
 
 def main():
-    amount_articles = 10000
-    function = partial(get_category_articles, amount_articles, )
+    latest_article_date = db.get_last_article_date()
+
+    start_date = latest_article_date + timedelta(days=1)
+    end_date = datetime.now()
+
+    function = partial(get_category_articles, start_date, end_date, )
     with Pool(len(CATEGORIES)) as p:
         p.map(function,  CATEGORIES)
         p.join()
