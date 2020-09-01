@@ -1,0 +1,16 @@
+FROM puckel/docker-airflow
+MAINTAINER Marco Cardoso
+
+# Install news_classifier dependencies
+USER root
+
+WORKDIR /usr/local/airflow/
+RUN mkdir -p /news_classifier
+
+COPY ./packages/news_classifier /news_classifier
+
+RUN chmod +x /news_classifier
+
+WORKDIR /news_classifier
+
+RUN python setup.py install
