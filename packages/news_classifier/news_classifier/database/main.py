@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from pymongo import MongoClient
 
@@ -21,7 +22,10 @@ class Database:
         mongo_root_username = os.environ.get("MONGO_INITDB_ROOT_USERNAME")
         mongo_root_passwd = os.environ.get("MONGO_INITDB_ROOT_PASSWORD")
 
-        mongo_url = f"mongodb://{mongo_root_username}:{mongo_root_passwd}@{mongo_host}:{mongo_port}"
+        if (mongo_root_username is not None) and (mongo_root_passwd is not None):
+            mongo_url = f"mongodb://{mongo_root_username}:{mongo_root_passwd}@{mongo_host}:{mongo_port}"
+        else:
+            mongo_url = f"mongodb://{mongo_host}:{mongo_port}"
 
         client = MongoClient(
             mongo_url,
@@ -53,6 +57,27 @@ class Database:
             projection=projection
         ))
         return articles
+
+    def get_last_article_date(self) -> datetime.datetime:
+        """
+        It returns the newest article date
+        """
+        last_article = self.collection.find(
+            filter={},
+            projection={
+                '_id': False,
+                'published_on': True
+            }
+        ).sort(
+            [
+                ('published_on', -1)
+            ]
+        ).limit(1)
+
+        if len(last_article[0]) != 0:
+            return last_article[0]['published_on']
+
+        print("Database with no articles ! ")
 
 
 db = Database()
