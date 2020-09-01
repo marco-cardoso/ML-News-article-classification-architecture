@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     image: 'mongo'
-    container_name: 'mongodb'
+    container_name: 'mongodb_container'
     env_file:
       - news_classifier.env
     ports:
@@ -12,8 +12,10 @@ services:
     networks:
       - db_nw
   news_classifier:
-    build: .
-    container_name: 'flask_app'
+    build:
+      context: .
+      dockerfile: 'Dockerfile.flask'
+    container_name: 'flask_app_container'
     env_file:
       - news_classifier.env
     volumes:
@@ -23,9 +25,36 @@ services:
       - db_nw
     depends_on: 
       - mongo
+  postgres:
+      image: postgres:9.6
+      container_name: postgres_container
+      env_file:
+        - news_classifier.env
+  airflow:                                            
+    build:
+      context: .
+      dockerfile: 'Dockerfile.airflow'
+    container_name: airflow_container
+    restart: always
+    depends_on:
+        - postgres
+        - mongo
+    environment:
+        - LOAD_EX=n
+        - EXECUTOR=Local
+    volumes:
+        - ./dags:/usr/local/airflow/dags
+    ports:
+        - "8082:8080"
+    command: webserver
+    healthcheck:
+        test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+        interval: 30s
+        timeout: 30s
+        retries: 3
   nginx:
     image: "nginx:1.13.5"
-    container_name: 'nginx'
+    container_name: 'nginx_container'
     ports:
       - "8080:80"
     volumes:
