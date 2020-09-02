@@ -10,7 +10,7 @@ services:
     volumes:
       - mongo-volume:/data/db
     networks:
-      - db_nw
+      - mongodb_nw
   news_classifier:
     build:
       context: .
@@ -22,7 +22,7 @@ services:
       - ./packages:/opt/services/news_classifier
     networks:
       - web_nw
-      - db_nw
+      - mongodb_nw
     depends_on: 
       - mongo
   postgres:
@@ -30,18 +30,22 @@ services:
       container_name: postgres_container
       env_file:
         - news_classifier.env
+      networks:
+        - postgres_nw
   airflow:                                            
     build:
       context: .
       dockerfile: 'Dockerfile.airflow'
     container_name: airflow_container
     restart: always
+    networks:
+      - postgres_nw
+      - mongodb_nw
     depends_on:
         - postgres
         - mongo
-    environment:
-        - LOAD_EX=n
-        - EXECUTOR=Local
+    env_file:
+      - news_classifier.env
     volumes:
         - ./dags:/usr/local/airflow/dags
     ports:
@@ -66,7 +70,9 @@ services:
 networks:
   web_nw:
     driver: bridge
-  db_nw:
+  mongodb_nw:
+    driver: bridge
+  postgres_nw:
     driver: bridge
 volumes:
   packages:
