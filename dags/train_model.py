@@ -18,8 +18,8 @@ default_args = {
 }
 
 dag = DAG(
-    "update_data",
-    description="Gets the daily properties using zoopla API",
+    "update_model",
+    description="Gets the latest news articles and create an updated model.",
     schedule_interval="0 0 * * *",
     default_args=default_args,
     catchup=False
