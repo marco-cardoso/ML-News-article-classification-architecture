@@ -62,7 +62,7 @@ class Database:
         """
         It returns the newest article date
         """
-        last_article = self.collection.find(
+        last_article_cusor = self.collection.find(
             filter={},
             projection={
                 '_id': False,
@@ -74,8 +74,8 @@ class Database:
             ]
         ).limit(1)
 
-        if len(last_article[0]) != 0:
-            return last_article[0]['published_on']
+        if last_article_cusor.count() != 0:
+            return last_article_cusor[0]['published_on']
 
         print("Database with no articles ! ")
 
