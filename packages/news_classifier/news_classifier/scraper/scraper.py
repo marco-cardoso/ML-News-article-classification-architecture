@@ -9,6 +9,11 @@ from bs4 import BeautifulSoup
 from news_classifier.database import db
 from news_classifier.scraper.article import GuardianArticle, ContentNotFoundException
 
+import logging
+
+
+_logger = logging.getLogger(__name__)
+
 CATEGORIES = [
     'politics',
     'environment',
@@ -72,10 +77,13 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
         current_month = start_date.strftime("%B")[:3].lower()
         current_day = start_date.day if start_date.day >= 10 else "0" + str(start_date.day)
 
+        _logger.info(f"Current date : {start_date}")
+
         url = format_url(category, current_year, current_month, current_day)
-        print(url)
+        _logger.info("Downloading articles at : " + url)
 
         articles_urls = get_articles_urls(url)
+        _logger.info(f"Amount of articles : {len(articles_urls)}")
 
         for article_url in articles_urls:
 
@@ -97,7 +105,7 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
                     )
 
                     total_downloaded += 1
-                    print(f"{total_downloaded} - Article {article_url} successfully inserted !")
+                    _logger.debug(f"{total_downloaded} - Article {article_url} successfully inserted !")
                     break
                 except (ContentNotFoundException, AttributeError):
                     # if i == 2:
@@ -112,9 +120,16 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
 
 
 def main():
-    latest_article_date = db.get_last_article_date()
-    latest_article_date = latest_article_date if latest_article_date is not None else datetime(2016, 1, 1)
+    _logger.info("Scraper started !")
 
+    latest_article_date = db.get_last_article_date()
+
+    if latest_article_date is None:
+        _logger.info("No stored articles were found in the database.")
+        latest_article_date =  datetime(2016, 1, 1)
+    
+    _logger.info(f"Articles from {start_date} to {end_date} are going to be downloaded !")
+    
     start_date = latest_article_date + timedelta(days=1)
     end_date = datetime.now()
 
@@ -124,6 +139,7 @@ def main():
         p.close()
         p.join()
  
+    _logger.info(f"Process finished !")
 
 
 if __name__ == '__main__':

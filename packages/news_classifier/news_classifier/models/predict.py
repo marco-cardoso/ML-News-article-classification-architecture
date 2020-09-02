@@ -1,4 +1,5 @@
 import typing as t
+import logging
 
 import pandas as pd
 
@@ -10,6 +11,9 @@ pipeline = load_pipeline()
 
 
 def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
+    _logger = logging.getLogger(__name__)
+
+    _logger.info("Generating a prediction.")
     data = pd.DataFrame([input_data])
 
     predictions = pipeline.predict(data)

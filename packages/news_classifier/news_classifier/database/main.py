@@ -1,8 +1,10 @@
 import os
 import datetime
+import logging
 
 from pymongo import MongoClient
 
+_logger = logging.getLogger(__name__)
 
 class Database:
     """
@@ -15,6 +17,7 @@ class Database:
         It starts the PyMongo client and loads the articles collection
         reference
         """
+        _logger.info("Initiating the database module !")
         super().__init__()
 
         mongo_host = os.environ.get("MONGO_HOST")
@@ -34,6 +37,7 @@ class Database:
 
         db = client["news-classifier"]
         self.collection = db['articles']
+        _logger.info("Database module successfully loaded.")
 
     def insert_article(self, article: dict):
         """
