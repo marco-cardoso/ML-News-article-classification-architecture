@@ -49,9 +49,12 @@ def get_articles_urls(url: str) -> list:
     soup = BeautifulSoup(response.text, features="html.parser")
 
     content_area = soup.find("div", {'class': "fc-container__inner"})
-    anchors = content_area.find_all("a", {'data-link-name': 'article'})
-    links = [anchor.get('href') for anchor in anchors]
-    return list(set(links))
+
+    if content_area is not None:
+        anchors = content_area.find_all("a", {'data-link-name': 'article'})
+        links = [anchor.get('href') for anchor in anchors]
+        return list(set(links))
+    return []
 
 
 def get_category_articles(start_date: datetime.date, end_date: datetime.date, category: str):
@@ -64,7 +67,7 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
     """
     total_downloaded = 0
 
-    while start_date <= end_date:
+    while start_date < end_date:
         current_year = start_date.year
         current_month = start_date.strftime("%B")[:3].lower()
         current_day = start_date.day if start_date.day >= 10 else "0" + str(start_date.day)
@@ -102,12 +105,15 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
                     pass
                 finally:
                     sleep(1)
+                break
 
         start_date -= timedelta(days=1)
+        break
 
 
 def main():
     latest_article_date = db.get_last_article_date()
+    latest_article_date = latest_article_date if latest_article_date is not None else datetime(2016, 1, 1)
 
     start_date = latest_article_date + timedelta(days=1)
     end_date = datetime.now()
@@ -115,8 +121,9 @@ def main():
     function = partial(get_category_articles, start_date, end_date, )
     with Pool(len(CATEGORIES)) as p:
         p.map(function,  CATEGORIES)
-        p.join()
         p.close()
+        p.join()
+ 
 
 
 if __name__ == '__main__':
