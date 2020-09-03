@@ -1,13 +1,18 @@
 import logging
+
+import mlflow
+import mlflow.sklearn
 import numpy as np
 import pandas as pd
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+
+from news_classifier.utils.model_management import _create_new_model_path
 
 _logger = logging.getLogger(__name__)
 
 
-def get_overall_results(results):
+def get_overall_results(results) -> dict:
     overall_results = {}
 
     df = pd.DataFrame.from_dict(results, orient="index")
@@ -34,31 +39,34 @@ def calculate_efficiency_metrics(pipeline, X, y):
     """
     _logger.info("Calculating efficiency metrics")
 
-    kfold = KFold(n_splits=5, random_state=4532, shuffle=True)
-    results = {}
-    confusion_matrices = []
+    with mlflow.start_run():
 
-    fold_number = 0
-    for train_index, test_index in kfold.split(X):
-        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+        model_timestamp = str(_create_new_model_path().name)
+        mlflow.set_tag("model_version", model_timestamp)
 
-        pipeline.fit(X_train, y_train)
+        kfold = KFold(n_splits=5, random_state=4532, shuffle=True)
+        results = {}
 
-        y_pred = pipeline.predict(X_test)
+        fold_number = 0
+        for train_index, test_index in kfold.split(X):
+            X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+            y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
-        metrics = {
-            'accuracy': accuracy_score(y_test, y_pred),
-            'precision': precision_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred)),
-            'recall': recall_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred)),
-            'f1': f1_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred))
-        }
+            pipeline.fit(X_train, y_train)
 
-        cm = confusion_matrix(y_test, y_pred)
-        confusion_matrices.append(cm)
+            y_pred = pipeline.predict(X_test)
 
-        results[fold_number] = metrics
-        fold_number += 1
+            metrics = {
+                'accuracy': accuracy_score(y_test, y_pred),
+                'precision': precision_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred)),
+                'recall': recall_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred)),
+                'f1': f1_score(y_test, y_pred, average="weighted", labels=np.unique(y_pred))
+            }
 
-    overall_results = get_overall_results(results)
+            results[fold_number] = metrics
+            fold_number += 1
+
+        overall_results = get_overall_results(results)
+        mlflow.log_metrics(overall_results)
+
     _logger.info("Metrics generated successfully")
