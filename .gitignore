@@ -53,4 +53,7 @@ MANIFEST
 /packages/news_classifier/.ipynb_checkpoints/
 /.ipynb_checkpoints/
 packages/news_classifier/build/*
+packages/news_classifier/mlflow/*
+packages/news_classifier/mlruns/*
 mongo-volume/*
+mlflow/*
