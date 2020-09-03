@@ -2,10 +2,7 @@ import requests as re
 from bs4 import BeautifulSoup
 
 
-class ContentNotFoundException(Exception):
-
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+from news_classifier.utils.exceptions import ContentNotFoundException
 
 
 class GuardianArticle:
