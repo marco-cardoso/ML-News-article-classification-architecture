@@ -6,9 +6,11 @@ from news_classifier.utils import load_data, model_management
 
 _logger = logging.getLogger(__name__)
 
+
 def train():
     _logger.info("Loading the data from the database.")
     df = load_data()
+
     X, y = df[variables.FEATURES], df[variables.TARGET]
 
     _logger.info("Training the model")
@@ -17,7 +19,7 @@ def train():
     _logger.info("Storing the model")
     model_management.save_pipeline(category_classifier)
 
-    _logger.info("Finished")
+    _logger.info("Model trained and stored")
 
 
 if __name__ == "__main__":

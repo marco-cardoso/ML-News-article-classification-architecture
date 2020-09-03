@@ -33,12 +33,16 @@ class Bucket:
 
         _logger.info(f"{file_path} successfully uploaded")
 
-    def download_file(self):
-        pass
+    def download_file(self, filename: str):
+        _logger.info(f"Downloading {filename} from AWS S3")
+
+        self.aws_s3_bucket.download_file(f"{self._aws_s3_bucket_model_folder}/{filename}", filename)
+
+        _logger.info(f"{filename} successfully downloaded")
 
     def get_last_model(self):
         pass
 
 
 bucket = Bucket()
-bucket.upload_file(Path("1597941820.118.pkl"))
+bucket.download_file("1597941820.118.pkl")
