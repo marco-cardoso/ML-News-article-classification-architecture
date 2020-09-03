@@ -56,6 +56,14 @@ services:
         interval: 30s
         timeout: 30s
         retries: 3
+  mlflow:
+    build:
+      context: .
+      dockerfile: 'Dockerfile.mlflow'
+    container_name: mlflow_container
+    ports:
+      - "5000:5000"
+    command: 'mlflow server --backend-store-uri ./mlflow --host 0.0.0.0 --port 5000'
   nginx:
     image: "nginx:1.13.5"
     container_name: 'nginx_container'
