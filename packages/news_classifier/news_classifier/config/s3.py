@@ -40,9 +40,26 @@ class Bucket:
 
         _logger.info(f"{filename} successfully downloaded")
 
-    def get_last_model(self):
-        pass
+    def get_environment_objects_mask(self, object) -> bool:
+        """
+        Return if the given object is from the current environment folder or not
+        :param object: An AWS S3 object
+        :return: A boolean representing whether the object is from the current environment folder or not
+        """
+        is_object = (object.size > 0)
+        is_in_environment_folder = (object.key.split("/")[0] == self._aws_s3_bucket_model_folder)
+        return is_object and is_in_environment_folder
+
+    def get_last_model_name(self):
+        # Get bucket objects
+        objects = list(self.aws_s3_bucket.objects.all())
+        # Get objects inside the environment folder and with size > 0
+        objects = list(filter(self.get_environment_objects_mask, objects))
+        # Get the last uploaded model
+        objects = sorted(objects, key=lambda obj: obj.last_modified, reverse=True)
+        latest_model_meta_data = objects[0]
+        model_name = Path(latest_model_meta_data.key).stem
+        return model_name
 
 
-bucket = Bucket()
-bucket.download_file("1597941820.118.pkl")
+
