@@ -57,3 +57,4 @@ packages/news_classifier/mlflow/*
 packages/news_classifier/mlruns/*
 mongo-volume/*
 mlflow/*
+*.pem
