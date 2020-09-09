@@ -4,12 +4,19 @@ import typing as t
 import pandas as pd
 
 from news_classifier.utils import text_examples
+from news_classifier.utils.exceptions import NoModelFoundException
 from news_classifier.utils.model_management import load_pipeline, update_model
+
+_logger = logging.getLogger(__name__)
 
 # It's necessary to load the model here otherwise
 # at each prediction the model will be
 # reloaded increasing the processing time
-pipeline = load_pipeline()
+try:
+    pipeline = load_pipeline()
+except NoModelFoundException as e:
+    _logger.info("There's not any model available")
+    pipeline = update_model()
 
 
 def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
@@ -22,7 +29,7 @@ def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
     # the same
     pipeline = update_model(pipeline)
 
-    _logger.info("Generating a prediction.")
+    _logger.info("Generating the prediction.")
     data = pd.DataFrame([input_data])
 
     predictions = pipeline.predict(data)
