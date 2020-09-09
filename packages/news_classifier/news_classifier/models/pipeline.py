@@ -8,10 +8,9 @@ from news_classifier.features import DropFeatures
 
 category_classifier = Pipeline(
     steps=[
-        ("drop_features", DropFeatures(variables.DROP_FEATURES)),
         ('column_transformer', ColumnTransformer(
             transformers=[
-                ('tfid', TfidfVectorizer(), variables.TEXT_FEATURES)
+                ('tfid', TfidfVectorizer(), variables.TEXT_FEATURES[0])
             ]
         )),
         ('clf', LinearSVC(C=0.5, dual=True, loss='squared_hinge', penalty='l2', tol=0.001))
