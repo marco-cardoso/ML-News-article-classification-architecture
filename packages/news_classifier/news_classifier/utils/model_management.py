@@ -105,7 +105,12 @@ def new_model_available() -> bool:
     :return: A boolean with the result
     """
     latest_s3_model_name = bucket.get_last_model_name()
-    latest_local_model = _get_latest_local_model_name()
+
+    try:
+        latest_local_model = _get_latest_local_model_name()
+    except NoModelFoundException:
+        return True
+
     return latest_s3_model_name != latest_local_model
 
 
@@ -126,7 +131,7 @@ def remove_old_models(keep_model: Path):
     _logger.info("Out of date models removed successfully")
 
 
-def update_model(pipeline: Pipeline):
+def update_model(pipeline: Pipeline = None):
     """
     Check S3, if there's a newer model then it replaces the latest local model
     with the S3 latest model
@@ -134,6 +139,7 @@ def update_model(pipeline: Pipeline):
     _logger.info("Checking if there's a new ML model available")
     if new_model_available():
         _logger.info("New ML model available, updating the models folder")
+
         latest_s3_model_name = bucket.get_last_model_name() + ".pkl"
         output_path = paths.MODELS_DIR / latest_s3_model_name
         bucket.download_file(
@@ -145,6 +151,7 @@ def update_model(pipeline: Pipeline):
 
         remove_old_models(keep_model=output_path)
         _logger.info("New ML model ready to use")
+    else:
+        _logger.info("The model being used is the latest")
 
     return pipeline
-
