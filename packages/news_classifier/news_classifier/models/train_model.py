@@ -14,11 +14,26 @@ mlflow.set_tracking_uri(f"http://{os.environ['MLFLOW_HOST']}:{os.environ['MLFLOW
 mlflow.set_experiment(paths.PIPELINE_NAME)
 
 
+def get_features_to_use():
+    features = []
+    features.extend(variables.TEXT_FEATURES)
+    features.extend(variables.TARGET)
+
+    projection = {ft: True for ft in features}
+    projection['_id'] = False
+    return projection
+
+
 def train():
     _logger.info("Loading the data from the database.")
-    df = load_data()
+    df = load_data(
+        projection=get_features_to_use()
+    )
 
-    X, y = df[variables.FEATURES], df[variables.TARGET]
+    _logger.info("Removing duplicated values")
+    df = df.drop_duplicates()
+
+    X, y = df.loc[:, variables.TEXT_FEATURES], df[variables.TARGET]
 
     calculate_efficiency_metrics(category_classifier, X, y)
 
