@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 import typing as t
 
 import pandas as pd
@@ -6,6 +7,8 @@ import pandas as pd
 from news_classifier.utils import text_examples
 from news_classifier.utils.exceptions import NoModelFoundException
 from news_classifier.utils.model_management import load_pipeline, update_model
+from news_classifier.version import __version__
+from news_classifier.database import db
 
 _logger = logging.getLogger(__name__)
 
@@ -33,8 +36,18 @@ def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
     data = pd.DataFrame([input_data])
 
     predictions = pipeline.predict(data)
-    results = {"prediction": predictions[0]}
-    return results
+    prediction = {
+        "prediction": predictions[0],
+        'datetime': datetime.utcnow(),
+        'version': __version__
+    }
+
+    # Save prediction result
+    log = dict(prediction)
+    log['input'] = input_data
+    db.insert_prediction(prediction=log)
+
+    return prediction
 
 
 if __name__ == "__main__":

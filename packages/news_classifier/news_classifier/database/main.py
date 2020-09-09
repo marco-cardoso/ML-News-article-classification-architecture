@@ -6,6 +6,7 @@ from pymongo import MongoClient
 
 _logger = logging.getLogger(__name__)
 
+
 class Database:
     """
     It's a wrapper for the PyMongo Client with a couple of necessary
@@ -37,6 +38,7 @@ class Database:
 
         db = client["news-classifier"]
         self.collection = db['articles']
+        self.predictions = db['predictions']
         _logger.info("Database module successfully loaded.")
 
     def insert_article(self, article: dict):
@@ -45,6 +47,13 @@ class Database:
         :param article: A Dictionary with the article data
         """
         return self.collection.insert_one(article)
+
+    def insert_prediction(self, prediction: dict):
+        """
+        It inserts a prediction output into the database
+        :param prediction: A Dictionary with the prediction
+        """
+        return self.predictions.insert_one(prediction)
 
     def read_articles(self, projection: dict = None) -> list:
         """
