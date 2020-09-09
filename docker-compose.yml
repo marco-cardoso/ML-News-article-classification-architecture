@@ -25,42 +25,25 @@ services:
       - mongodb_nw
     depends_on: 
       - mongo
-  postgres:
-      image: postgres:9.6
-      container_name: postgres_container
-      env_file:
-        - news_classifier.env
-      networks:
-        - postgres_nw
-  airflow:                                            
+  cron:
     build:
       context: .
-      dockerfile: 'Dockerfile.airflow'
-    container_name: airflow_container
-    restart: always
+      dockerfile: 'Dockerfile.cron'
+    container_name: cron_container
     networks:
-      - postgres_nw
       - mongodb_nw
+      - mlflow_nw
     depends_on:
-        - postgres
         - mongo
     env_file:
       - news_classifier.env
-    volumes:
-        - ./dags:/usr/local/airflow/dags
-    ports:
-        - "8082:8080"
-    command: webserver
-    healthcheck:
-        test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
-        interval: 30s
-        timeout: 30s
-        retries: 3
   mlflow:
     build:
       context: .
       dockerfile: 'Dockerfile.mlflow'
     container_name: mlflow_container
+    networks:
+      - mlflow_nw
     ports:
       - "5000:5000"
     command: 'mlflow server --backend-store-uri ./mlflow --host 0.0.0.0 --port 5000'
@@ -80,7 +63,7 @@ networks:
     driver: bridge
   mongodb_nw:
     driver: bridge
-  postgres_nw:
+  mlflow_nw:
     driver: bridge
 volumes:
   packages:
