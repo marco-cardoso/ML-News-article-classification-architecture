@@ -106,7 +106,6 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
 
                     total_downloaded += 1
                     _logger.debug(f"{total_downloaded} - Article {article_url} successfully inserted !")
-                    break
                 except (ContentNotFoundException, AttributeError):
                     # if i == 2:
                     #     print(f"The article {article_url} was ignored due to an unknown format !")
@@ -115,8 +114,7 @@ def get_category_articles(start_date: datetime.date, end_date: datetime.date, ca
                     sleep(1)
                 break
 
-        start_date -= timedelta(days=1)
-        break
+        start_date += timedelta(days=1)
 
 
 def main():
@@ -127,11 +125,11 @@ def main():
     if latest_article_date is None:
         _logger.info("No stored articles were found in the database.")
         latest_article_date =  datetime(2016, 1, 1)
-    
-    _logger.info(f"Articles from {start_date} to {end_date} are going to be downloaded !")
-    
+
     start_date = latest_article_date + timedelta(days=1)
     end_date = datetime.now()
+
+    _logger.info(f"Articles from {start_date} to {end_date} are going to be downloaded !")
 
     function = partial(get_category_articles, start_date, end_date, )
     with Pool(len(CATEGORIES)) as p:
