@@ -49,8 +49,8 @@ def calculate_efficiency_metrics(pipeline, X, y):
 
         fold_number = 0
         for train_index, test_index in kfold.split(X):
-            X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-            y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+            X_train, X_test = X.iloc[train_index, :], X.iloc[test_index]
+            y_train, y_test = y.iloc[train_index, :], y.iloc[test_index]
 
             pipeline.fit(X_train, y_train)
 
