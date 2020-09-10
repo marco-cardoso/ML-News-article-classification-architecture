@@ -11,7 +11,6 @@ from news_classifier.scraper.article import GuardianArticle, ContentNotFoundExce
 
 import logging
 
-
 _logger = logging.getLogger(__name__)
 
 CATEGORIES = [
@@ -124,7 +123,7 @@ def main():
 
     if latest_article_date is None:
         _logger.info("No stored articles were found in the database.")
-        latest_article_date =  datetime(2016, 1, 1)
+        latest_article_date = datetime(2016, 1, 1)
 
     start_date = latest_article_date + timedelta(days=1)
     end_date = datetime.now()
@@ -133,10 +132,10 @@ def main():
 
     function = partial(get_category_articles, start_date, end_date, )
     with Pool(len(CATEGORIES)) as p:
-        p.map(function,  CATEGORIES)
+        p.map(function, CATEGORIES)
         p.close()
         p.join()
- 
+
     _logger.info(f"Process finished !")
 
 
