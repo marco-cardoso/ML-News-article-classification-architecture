@@ -18,6 +18,8 @@ RUN pip install -r requirements.txt
 
 # Change run.sh permissions
 RUN chmod +x /opt/services/news_classifier/webapp/run.sh
+RUN chmod 777 /models
+
 RUN chown -R app-user:app-user ./
 
 # Expose port and running cmd as app-user

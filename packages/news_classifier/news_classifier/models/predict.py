@@ -37,7 +37,7 @@ def predict(input_data: t.Union[pd.DataFrame, dict]) -> dict:
 
     predictions = pipeline.predict(data)
     prediction = {
-        "prediction": predictions[0],
+        "output": predictions[0],
         'datetime': datetime.utcnow(),
         'version': __version__
     }
