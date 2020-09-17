@@ -1,4 +1,4 @@
-# `ML Article classification infrastructure`
+# `ML News article classification infrastructure`
 
 In order to help journalists to write articles faster and reduce errors when choosing an article 
 category this project was created. It's the entire infrastructure to make this feature to work in a production environment.
@@ -67,6 +67,8 @@ at the end of its execution the result estimator was :
 
 ## `System architeture`
 
+### `Overview`
+
 ![alt text](https://github.com/marco-cardoso/news-classifier/blob/master/news_classifier_arch.jpg)
 
 
@@ -77,6 +79,26 @@ at the end of its execution the result estimator was :
     <li>Mongo container - Where the articles are stored and loaded by the CRON routine to train the model</li>
     <li>MLFlow container - Responsible to store the metrics from the latest model produced by the CRON container</li>
 </ul>
+
+### `Modularization`
+
+It was decided to separate the app in two python packages : A module with everything related to the API and another with the 
+functions related to ML and the jupyter notebooks.
+
+Docker uses them to build the containers. 
+
+Both are available at : https://github.com/marco-cardoso/news-classifier/tree/master/packages 
+
+The flask container uses the API package to run the flask app using gunicorn as server and the ML package (news_classifier) to
+use the method to load the ML model from S3. The CRON container uses just the last one to fetch the data from mongo/train the 
+model and generate the evaluation metrics.
+
+### `Stored metrics`
+
+In order to evaluate the model a KFold is performed using 5 folds. For each fold the accuracy, precision, recall and f1 are calculated.
+MLFlow saves them and their mean and standard deviation. 
+
+https://github.com/marco-cardoso/news-classifier/blob/master/packages/news_classifier/news_classifier/models/evaluate.py
 
 
 ## `Docker`
@@ -92,7 +114,7 @@ Environment variables
 
 <ul>
     <li>AWS_S3_BUCKET_NAME - Your AWS S3 bucket name to save the ML models in </li>
-    <li>AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with full access to the above bucket/li>
+    <li>AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with full access to the above bucket</li>
 </ul>
 
 After the requirements are satisfied open a terminal in the project root folder and type :
