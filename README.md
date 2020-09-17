@@ -1,13 +1,9 @@
-# `News classifier`
+# `ML Article classification infrastructure`
 
 In order to help journalists to write articles faster and reduce errors when choosing an article 
-category this project was created. It's the entire infrastructure to make this feature to work. 
-Data was acquired from the guardian website, a couple of experiments conducted to obtain the best
-ML model for the problem and a simple webpage created to test the app. Also, a routine using apache
-airflow was developed to daily update the ML model and save the new metrics in order to increase its efficiency.
-
-
-You can use the webpage at : https://google.com
+category this project was created. It's the entire infrastructure to make this feature to work in a production environment.
+The base model was trained using the data from the guardian website. The main focus of this project is the 
+infrastructure, given the fact that the ML solution for the problem "News classification" is relativelly simple. 
 
 Currently the API is able to classify texts from the follow categories :
 
@@ -22,24 +18,16 @@ Currently the API is able to classify texts from the follow categories :
     <li>Business</li>
 </ul>
 
-## `Requirements`
+A simple EDA was conducted, you can look at the results in :
 
-<ul>
-    <li>Python 3.7</li>
-    <li>Pip/Conda</li>
-    <li>A python virtual environment with all project dependencies</li>
-    <li>MongoDB</li>
-    <li>In order to run the API you'll also have to be using a Linux machine due to apache airflow and gUnicorn</li>
-</ul>
+https://github.com/marco-cardoso/news-classifier/blob/master/notebooks/eda.ipynb
 
-## `Environment variables`
+The notebook with the base model results is available at :
 
-Create the follow environment variables with the MongoDB settings :
+https://github.com/marco-cardoso/news-classifier/blob/master/notebooks/ml.ipynb
 
-<ul>
-    <li>MONGO_HOST</li>
-    <li>MONGO_PORT</li>
- </ul>
+
+If you want to test the model, copy an article from any news website and paste in the webpage : http://3.131.248.252:8080
 
 
 ## `Scraper`
@@ -50,14 +38,8 @@ Also, all the articles from a specific category and date are showed in a single 
 
 If you want to run the scraper to get the data to train the model the script is available at :
 
-https://github.com/marco-cardoso/news-classifier/blob/master/src/news_classifier/scraper/scraper.py
+https://github.com/marco-cardoso/news-classifier/blob/master/packages/news_classifier/news_classifier/scraper/scraper.py
 
-To run simply use :
-
-    python scraper.py
-
-This will download ten thousand articles for each category. Be patient, the execution takes several hours to finish.
-If you want to change the amount of articles you can change the value in code.
 
 The follow attributes are downloaded :
 
@@ -67,27 +49,13 @@ The follow attributes are downloaded :
     <li>Article content</li>
     <li>Article topics</li>
  </ul>
-
-
-## `Experiments`
-
-### `EDA`
-
-After downloading the articles a simple EDA was conducted, you can see the results at :
-
-https://github.com/marco-cardoso/news-classifier/blob/master/notebooks/eda.ipynb
-
-### `Machine learning `
-
-The ML notebook with the executed experiments is available at :
-
-https://github.com/marco-cardoso/news-classifier/blob/master/notebooks/eda.ipynb
+ 
+## `ML model`
 
 
 #### `Feature engineer`
 
-Two transformations are necessary to train the model : The TfidfVectorizer to tokenize the article texts and
-the LabelEncoder to convert the target values in numerical values.
+The only performed transformation over the data is the transformer TfidVectorizer.
 
 #### `Best model`
 
@@ -96,11 +64,44 @@ at the end of its execution the result estimator was :
 
     LinearSVC(C=0.5, dual=True, loss='squared_hinge', penalty='l2', tol=0.001)
     
-## `API`
 
-The API python package is available at :
+## `System architeture`
 
-https://github.com/marco-cardoso/news-classifier/tree/master/src/news_classifier/webapp
+![alt text](https://github.com/marco-cardoso/news-classifier/blob/master/news_classifier_arch.jpg)
 
-It was developed with Flask. To run in a production environment you need to use a Linux machine
-to use with gUnicorn.
+
+<ul>
+    <li>Nginx container - Responsible to handle the requests and send them to the Flask API </li>
+    <li>Flask container - Responsible to serve the webpage and the ML model</li>
+    <li>CRON container - Responsible to update the model with new articles from the guardian website daily</li>
+    <li>Mongo container - Where the articles are stored and loaded by the CRON routine to train the model</li>
+    <li>MLFlow container - Responsible to store the metrics from the latest model produced by the CRON container</li>
+</ul>
+
+
+## `Docker`
+
+Requirements
+<ul>
+    <li>At least dockver v19.03.12 </li>
+    <li>At least docker-compose v1.26.2</li>
+    <li>An AWS account with an IAM user that has full access to S3.</li>
+</ul>
+
+Environment variables
+
+<ul>
+    <li>AWS_S3_BUCKET_NAME - Your AWS S3 bucket name to save the ML models in </li>
+    <li>AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with full access to the above bucket/li>
+</ul>
+
+After the requirements are satisfied open a terminal in the project root folder and type :
+
+    docker-compose up --build
+    
+## `Warning`
+
+Ideally, the best architeture would be a separated instance for MLFLOW, MONGO and CRON containers. With more
+attention to the last one, given the fact that is responsible to load thousands of MongoDB documents and train
+the latest model, using a lot of RAM memory and CPU power. Nonetheless, this architeture was chosen for simplicity and to
+reduce the costs on AWS, since only one instance is enough due to the low amount of user requests.
