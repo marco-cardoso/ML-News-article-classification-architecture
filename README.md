@@ -1,11 +1,11 @@
 # `ML News article classification infrastructure`
 
 In order to help journalists to write articles faster and reduce errors when choosing an article 
-category this project was created. It's the entire infrastructure to make this feature to work in a production environment.
+category this project was created. It's the entire infrastructure to make this feature work in a production environment.
 The base model was trained using the data from the guardian website. The main focus of this project is the 
-infrastructure, given the fact that the ML solution for the problem "News classification" is relativelly simple. 
+infrastructure, given the fact that the ML solution for the problem "News classification" is relatively simple. 
 
-Currently the API is able to classify texts from the follow categories :
+Currently, the API is able to classify texts from the following categories :
 
 <ul>
     <li>Politics</li>
@@ -32,7 +32,7 @@ If you want to test the model, copy an article from any news website and paste i
 
 ## `Scraper`
 
-The guardian website was used due to its simplicity to download the data from. 
+The Guardian website was used due to its simplicity to download the data from. 
 The URLs follow a clear pattern : 'https://www.theguardian.com/{category}/{year}/{month}/{day}/'. 
 Also, all the articles from a specific category and date are showed in a single URL.
 
@@ -41,7 +41,7 @@ If you want to run the scraper to get the data to train the model the script is 
 https://github.com/marco-cardoso/news-classifier/blob/master/packages/news_classifier/news_classifier/scraper/scraper.py
 
 
-The follow attributes are downloaded :
+The following attributes are downloaded :
 
 <ul>
     <li>Article category</li>
@@ -60,12 +60,12 @@ The only performed transformation over the data is the transformer TfidVectorize
 #### `Best model`
 
 To get the best model it was used the TPOT package to conduct an informative search. After several hours,
-at the end of its execution the result estimator was : 
+at the end of its execution the resulting estimator was : 
 
     LinearSVC(C=0.5, dual=True, loss='squared_hinge', penalty='l2', tol=0.001)
     
 
-## `System architeture`
+## `System architecture`
 
 ### `Overview`
 
@@ -95,7 +95,7 @@ model and generate the evaluation metrics.
 
 ### `Stored metrics`
 
-In order to evaluate the model a KFold is performed using 5 folds. For each fold the accuracy, precision, recall and f1 are calculated.
+In order to evaluate the model a KFold is performed using 5 folds. For each fold, the accuracy, precision, recall and f1 score are calculated.
 MLFlow saves them and their mean and standard deviation. 
 
 https://github.com/marco-cardoso/news-classifier/blob/master/packages/news_classifier/news_classifier/models/evaluate.py
@@ -123,7 +123,7 @@ After the requirements are satisfied open a terminal in the project root folder 
     
 ## `Warning`
 
-Ideally, the best architeture would be a separated instance for MLFLOW, MONGO and CRON containers. With more
+Ideally, the best architecture would be a separated instance for MLFLOW, MONGO, and CRON containers. With more
 attention to the last one, given the fact that is responsible to load thousands of MongoDB documents and train
-the latest model, using a lot of RAM memory and CPU power. Nonetheless, this architeture was chosen for simplicity and to
+the latest model, using a lot of RAM memory and CPU power. Nonetheless, this architecture was chosen for simplicity and to
 reduce the costs on AWS, since only one instance is enough due to the low amount of user requests.
