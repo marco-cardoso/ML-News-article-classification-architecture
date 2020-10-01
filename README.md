@@ -1,9 +1,9 @@
-# `ML News article classification infrastructure`
+# `ML News article classification architecture`
 
 In order to help journalists to write articles faster and reduce errors when choosing an article 
-category this project was created. It's the entire infrastructure to make this feature work in a production environment.
+category this project was created. It's the entire solution to make this feature work in a production environment.
 The base model was trained using the data from the guardian website. The main focus of this project is the 
-infrastructure, given the fact that the ML solution for the problem "News classification" is relatively simple. 
+architecture, given the fact that the ML solution for the problem "News classification" is relatively simple. 
 
 Currently, the API is able to classify texts from the following categories :
 
