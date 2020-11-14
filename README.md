@@ -27,9 +27,6 @@ The notebook with the base model results is available at :
 https://github.com/marco-cardoso/news-classifier/blob/master/notebooks/ml.ipynb
 
 
-If you want to test the model, copy an article from any news website and paste in the webpage : http://3.131.248.252:8080
-
-
 ## `Scraper`
 
 The Guardian website was used due to its simplicity to download the data from. 
