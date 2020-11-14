@@ -67,6 +67,8 @@ at the end of its execution the resulting estimator was :
 
 ## `System architecture`
 
+![alt text](https://github.com/marco-cardoso/news-classifier/blob/master/image_2020-11-14_134036.png)
+
 ### `Overview`
 
 ![alt text](https://github.com/marco-cardoso/news-classifier/blob/master/news_classifier_arch.jpg)
