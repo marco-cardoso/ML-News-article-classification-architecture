@@ -13,4 +13,4 @@ seaborn>=0.10.1
 joblib>=0.15.1
 gunicorn
 boto3==1.9.66
-mlflow==1.10.0
+mlflow==1.23.1
